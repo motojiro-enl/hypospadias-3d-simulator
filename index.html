@@ -1,0 +1,1446 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2775.1">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  </style>
+</head>
+<body>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html lang="ja"&gt;</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta charset="UTF-8" /&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" /&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;title&gt;Hypospadias Classification 3D Morphological Simulator v1.0 | EN / JA Bilingual&lt;/title&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta name="description" content="Interactive 3D anatomical simulator for Hypospadias across multiple clinical classification systems (Standard Anatomical/Duckett, Barcat, Denis Browne, and GMS severity presets) with continuous morphological sliders." /&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta property="og:title" content="Hypospadias Classification 3D Simulator v1.0 (EN/JA)" /&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta property="og:description" content="Interactive 3D visualization of urethral meatus location, urethral plate, chordee curvature, dorsal preputial hood, bifid scrotum, and gonadal descent." /&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;meta property="og:type" content="website" /&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;script src="https://cdn.tailwindcss.com"&gt;&lt;/script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"&gt;&lt;/script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"&gt;&lt;/script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;style&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>html, body {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>margin: 0;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>padding: 0;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>width: 100%;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>height: 100%;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>height: 100dvh;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>overflow: hidden;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Hiragino Sans', 'Meiryo', sans-serif;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>background: #0f172a;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>color: #f8fafc;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>#canvas-container {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>width: 100%;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>height: 100%;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>touch-action: none;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>input[type="range"] {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>accent-color: #38bdf8;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>height: 24px;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>cursor: pointer;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.no-scrollbar::-webkit-scrollbar { display: none; }</p>
+<p class="p1"><span class="Apple-converted-space">    </span>.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/style&gt;</p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p1">&lt;body id="app-body" class="flex flex-col md:flex-row w-full h-full relative"&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;!-- ==================== 3D Viewport Area ==================== --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div id="viewport-wrapper" class="relative flex-1 w-full h-[52dvh] md:h-full bg-slate-900 overflow-hidden transition-all duration-300"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="canvas-container"&gt;&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- Top Overlay Controls --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="absolute top-2 left-2 right-2 md:right-auto md:top-4 md:left-4 flex flex-col gap-1.5 pointer-events-none z-20 md:max-w-sm"&gt;</p>
+<p class="p2"><span class="Apple-converted-space">      </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;!-- Title &amp; Language / Legend Bar --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="bg-slate-900/85 backdrop-blur-md border border-slate-700/90 px-3 py-1.5 md:px-4 md:py-2.5 rounded-xl shadow-lg pointer-events-auto flex items-center justify-between gap-2"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="min-w-0"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;span id="ui-subtitle" class="hidden sm:block text-[10px] font-bold uppercase tracking-wider text-sky-400 truncate"&gt;Pediatric Urology Education &amp; Family Counseling&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;h1 id="ui-title" class="text-xs sm:text-sm md:text-base font-bold text-white truncate"&gt;尿道下裂 3D形態シミュレーター &lt;span class="text-[10px] font-normal text-sky-400"&gt;v1.0&lt;/span&gt;&lt;/h1&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="flex items-center gap-1.5 shrink-0"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;button id="btn-legend-toggle" onclick="toggleMobileLegend()" class="sm:hidden px-2 py-1 rounded-md text-[11px] font-bold bg-slate-800 text-slate-200 border border-slate-600"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>ℹ️ 凡例</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;button id="btn-lang" onclick="toggleLanguage()" class="px-2 py-1 md:px-2.5 md:py-1 rounded-md text-[11px] font-bold bg-emerald-600 hover:bg-emerald-500 text-white border border-emerald-400 transition shadow"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>🌐 日本語 / EN</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;!-- Mode &amp; Camera Quick Bar --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="bg-slate-900/85 backdrop-blur-md border border-slate-700/90 p-1.5 md:p-2 rounded-xl flex flex-col gap-1.5 shadow-lg pointer-events-auto"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="flex items-center gap-1"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;button id="btn-mode-schema" onclick="setVisualMode('schema')" class="flex-1 py-1 px-2 text-[11px] md:text-xs rounded-lg font-bold bg-sky-600 text-white border border-sky-400 transition truncate"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>🎨 模式図モード</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;button id="btn-mode-realistic" onclick="setVisualMode('realistic')" class="flex-1 py-1 px-2 text-[11px] md:text-xs rounded-lg font-bold bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700 transition truncate"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>✨ 写実モード</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;button id="btn-sagittal" onclick="toggleSagittal()" class="py-1 px-2 text-[11px] md:text-xs rounded-lg bg-indigo-900/90 border border-indigo-400 text-indigo-100 hover:bg-indigo-700 transition font-semibold shrink-0"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>🔍 矢状断: OFF</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="flex items-center gap-1 overflow-x-auto no-scrollbar pt-1 border-t border-slate-800/90"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;button id="btn-view-oblique" onclick="setCameraView('oblique')" class="px-2 py-1 text-[11px] rounded-lg bg-slate-800 hover:bg-sky-600 transition shrink-0"&gt;斜め（全体）&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;button id="btn-view-ventral" onclick="setCameraView('ventral')" class="px-2 py-1 text-[11px] rounded-lg bg-slate-800 hover:bg-sky-600 transition shrink-0"&gt;腹側・会陰（尿道口・尿道板）&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;button id="btn-view-lateral" onclick="setCameraView('lateral')" class="px-2 py-1 text-[11px] rounded-lg bg-slate-800 hover:bg-sky-600 transition shrink-0"&gt;側面（陰茎索・屈曲）&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- Bottom-Left: Anatomical Legend --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="legend-box" class="hidden sm:block absolute bottom-3 left-3 right-3 sm:right-auto bg-slate-900/95 backdrop-blur-md border border-slate-700 p-3 rounded-xl text-[11px] md:text-xs space-y-1.5 shadow-2xl z-30"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="flex items-center justify-between mb-1"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div id="legend-title" class="font-bold text-slate-200"&gt;解剖学的構造（模式図カラー）&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button onclick="toggleMobileLegend()" class="sm:hidden text-slate-400 hover:text-white px-1.5 py-0.5 text-xs border border-slate-700 rounded"&gt;✕ 閉じる&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="flex items-center gap-2"&gt;&lt;span id="leg-glans" class="w-3 h-3 rounded-full inline-block shrink-0" style="background:#f472b6;"&gt;&lt;/span&gt;&lt;span id="leg-text-glans"&gt;亀頭（発育度・腹側亀頭溝）&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="flex items-center gap-2"&gt;&lt;span id="leg-corpora" class="w-3 h-3 rounded-full inline-block shrink-0" style="background:#3b82f6;"&gt;&lt;/span&gt;&lt;span id="leg-text-corpora"&gt;陰茎海綿体（背側左右一対）&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="flex items-center gap-2"&gt;&lt;span id="leg-meatus" class="w-3 h-3 rounded-full inline-block border-2 border-yellow-300 shrink-0" style="background:#0f172a;"&gt;&lt;/span&gt;&lt;span id="leg-text-meatus" class="font-semibold text-yellow-300"&gt;異所性外尿道口（陰茎腹側〜会陰の表面開口）&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="flex items-center gap-2"&gt;&lt;span id="leg-urethra" class="w-3 h-3 rounded-full inline-block shrink-0" style="background:#eab308;"&gt;&lt;/span&gt;&lt;span id="leg-text-urethra"&gt;形成済み尿道・尿道海綿体（外尿道口より近位）&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="flex items-center gap-2"&gt;&lt;span id="leg-plate" class="w-3 h-3 rounded-full inline-block shrink-0" style="background:#fb7185;"&gt;&lt;/span&gt;&lt;span id="leg-text-plate"&gt;未閉鎖の尿道板（Urethral Plate：外尿道口〜亀頭先端）&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="flex items-center gap-2"&gt;&lt;span id="leg-hood" class="w-3 h-3 rounded-full inline-block shrink-0" style="background:#94a3b8;"&gt;&lt;/span&gt;&lt;span id="leg-text-hood"&gt;背側包皮フード（Dorsal Hood / 腹側包皮欠損）&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="flex items-center gap-2"&gt;&lt;span id="leg-scrotum" class="w-3 h-3 rounded-full inline-block shrink-0" style="background:#d97706;"&gt;&lt;/span&gt;&lt;span id="leg-text-scrotum"&gt;陰嚢・陰唇陰嚢隆起（完全癒合 ⇄ 二分陰嚢）&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="flex items-center gap-2"&gt;&lt;span id="leg-gonad" class="w-3 h-3 rounded-full inline-block shrink-0" style="background:#10b981;"&gt;&lt;/span&gt;&lt;span id="leg-text-gonad"&gt;精巣・下降経路（陰嚢内 ⇄ 鼠径管 ⇄ 腹腔内）&lt;/span&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;!-- ==================== Control Panel ==================== --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;div id="control-panel" class="w-full md:w-[460px] h-[48dvh] md:h-full bg-slate-950 border-t md:border-t-0 md:border-l border-slate-800 flex flex-col transition-all duration-300 z-20 shrink-0"&gt;</p>
+<p class="p2"><span class="Apple-converted-space">    </span></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- Mobile Sheet Handle --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div class="md:hidden bg-slate-900 border-b border-slate-800 px-3 py-1.5 flex items-center justify-between shrink-0"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;span id="mobile-sheet-status" class="text-[11px] font-bold text-sky-400 truncate"&gt;冠状溝部 (Coronal)&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="flex items-center gap-1.5"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button id="btn-sheet-expand" onclick="setMobileSheetState('expanded')" class="px-2 py-0.5 text-[11px] rounded bg-slate-800 text-slate-200 border border-slate-700"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>▲ スライダー拡大</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button id="btn-sheet-collapse" onclick="setMobileSheetState('collapsed')" class="px-2 py-0.5 text-[11px] rounded bg-sky-900/80 text-sky-200 border border-sky-600 font-semibold"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>▼ 3D全画面</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;!-- Scrollable Controls Area --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="panel-scroll-area" class="p-3.5 md:p-5 overflow-y-auto flex-1 flex flex-col gap-3.5" style="touch-action: pan-y;"&gt;</p>
+<p class="p2"><span class="Apple-converted-space">      </span></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;!-- Step 1: Classification System Selector --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="flex items-center justify-between mb-1.5"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;h2 id="ui-sec1-title" class="text-xs md:text-sm font-bold text-sky-400"&gt;1. 尿道下裂の分類システムを選択&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;span id="ui-sys-badge" class="text-[10px] px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 font-semibold"&gt;4 Classifications&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="grid grid-cols-2 gap-1.5"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;button onclick="selectClassificationSystem('anatomical')" id="sys-btn-anatomical" class="sys-btn py-1.5 px-2 rounded-lg text-[11px] md:text-xs font-bold border border-sky-400 bg-sky-600 text-white shadow text-left truncate"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>① 標準解剖学的分類 (Duckett)</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;button onclick="selectClassificationSystem('barcat')" id="sys-btn-barcat" class="sys-btn py-1.5 px-2 rounded-lg text-[11px] md:text-xs font-bold border border-slate-700 bg-slate-800 text-slate-300 hover:bg-slate-700 text-left truncate"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>② Barcat分類 (Anterior/Mid/Post)</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;button onclick="selectClassificationSystem('browne')" id="sys-btn-browne" class="sys-btn py-1.5 px-2 rounded-lg text-[11px] md:text-xs font-bold border border-slate-700 bg-slate-800 text-slate-300 hover:bg-slate-700 text-left truncate"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>③ Browne分類 (Denis Browne)</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;button onclick="selectClassificationSystem('gms')" id="sys-btn-gms" class="sys-btn py-1.5 px-2 rounded-lg text-[11px] md:text-xs font-bold border border-slate-700 bg-slate-800 text-slate-300 hover:bg-slate-700 text-left truncate"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>④ GMS重症度スコア参考プリセット</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;!-- Step 2: Grade / Type Selector within Selected System --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="bg-slate-900/70 p-2.5 rounded-xl border border-slate-800"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="flex items-center justify-between mb-2"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;h2 id="ui-sec2-title" class="text-xs md:text-sm font-bold text-emerald-400"&gt;2. グレード・病型を選択&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;span id="current-grade-badge" class="text-[11px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-semibold"&gt;冠状溝部 (Coronal)&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;!-- Dynamic Grade Buttons Container --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div id="grade-buttons-container" class="flex flex-wrap gap-1.5"&gt;&lt;/div&gt;</p>
+<p class="p2"><span class="Apple-converted-space">        </span></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;p id="grade-desc" class="mt-2.5 text-xs text-slate-300 bg-slate-950/90 p-2.5 rounded-lg border border-slate-800 leading-relaxed"&gt;&lt;/p&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;!-- Step 3: Continuous Anatomical Sliders --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div class="space-y-2.5"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="flex items-center justify-between"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;h2 id="ui-sec3-title" class="text-xs md:text-sm font-bold text-sky-400"&gt;3. 解剖学的細項目スライダー（アナログ調整）&lt;/h2&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;!-- (1) External Urethral Meatus Location (Primary Determinant in Hypospadias) --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="bg-amber-950/25 p-2.5 rounded-xl border border-amber-600/50"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;div class="flex justify-between text-xs font-semibold mb-0.5"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;span id="lbl-s4-title" class="text-amber-300"&gt;① 外尿道口の位置（亀頭先端 ⇄ 陰茎幹部 ⇄ 会陰部）&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;span id="val-meatus" class="text-amber-300 font-bold"&gt;82%&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;input id="slider-meatus" type="range" min="0" max="100" value="82" class="w-full" style="accent-color:#f59e0b;" oninput="onManualSliderChange()" /&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;div class="flex justify-between text-[10px] text-amber-200/70"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;span id="lbl-s4-min"&gt;0%（会陰部 Perineal）&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;span id="lbl-s4-mid"&gt;50%（陰茎幹部 Shaft）&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;span id="lbl-s4-max"&gt;100%（正常先端 Tip）&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;!-- (2) Ventral Curvature (Chordee) --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="bg-slate-900/90 p-2.5 rounded-xl border border-slate-800"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;div class="flex justify-between text-xs font-semibold mb-0.5"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;span id="lbl-s2-title"&gt;② 陰茎海綿体屈曲の程度（陰茎索 / Chordee）&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;span id="val-curvature" class="text-sky-400"&gt;12%&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;input id="slider-curvature" type="range" min="0" max="100" value="12" class="w-full" oninput="onManualSliderChange()" /&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;div class="flex justify-between text-[10px] text-slate-400"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;span id="lbl-s2-min"&gt;0%（屈曲なし・ストレート）&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;span id="lbl-s2-max"&gt;100%（高度屈曲 Severe Chordee）&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;!-- (3) Glans &amp; Phallic Size --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="bg-slate-900/90 p-2.5 rounded-xl border border-slate-800"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;div class="flex justify-between text-xs font-semibold mb-0.5"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;span id="lbl-s1-title"&gt;③ 亀頭・陰茎サイズ（Glans Size &amp; Development）&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;span id="val-glans" class="text-sky-400"&gt;90%&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;input id="slider-glans" type="range" min="0" max="100" value="90" class="w-full" oninput="onManualSliderChange()" /&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;div class="flex justify-between text-[10px] text-slate-400"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;span id="lbl-s1-min"&gt;小（小陰茎 / 亀頭低形成）&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;span id="lbl-s1-max"&gt;大（標準発育亀頭）&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;!-- (4) Scrotum to Labia / Bifid Scrotum Change --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="bg-slate-900/90 p-2.5 rounded-xl border border-slate-800"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;div class="flex justify-between text-xs font-semibold mb-0.5"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;span id="lbl-s3-title"&gt;④ 陰嚢から陰唇への変化（完全陰嚢 ⇄ 二分陰嚢 ⇄ 陰唇様）&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;span id="val-scrotum" class="text-sky-400"&gt;95%&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;input id="slider-scrotum" type="range" min="0" max="100" value="95" class="w-full" oninput="onManualSliderChange()" /&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;div class="flex justify-between text-[10px] text-slate-400"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;span id="lbl-s3-min"&gt;0%（分離・陰唇様）&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;span id="lbl-s3-mid"&gt;50%（二分陰嚢 Bifid）&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;span id="lbl-s3-max"&gt;100%（完全癒合陰嚢）&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;!-- (5) Gonadal Descent Position --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;div class="bg-emerald-950/40 p-2.5 rounded-xl border border-emerald-700/60"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;div class="flex justify-between text-xs font-semibold mb-0.5"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;span id="lbl-s5-title" class="text-emerald-300"&gt;⑤ 精巣（性腺）の位置（腹腔内 ⇄ 鼠径管 ⇄ 陰嚢内）&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;span id="val-gonad" class="text-emerald-400"&gt;100% (陰嚢底部)&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;input id="slider-gonad" type="range" min="0" max="100" value="100" class="w-full" style="accent-color:#10b981;" oninput="onManualSliderChange()" /&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;div class="flex justify-between text-[10px] text-emerald-300/70"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;span id="lbl-s5-min"&gt;0%（腹腔内停留）&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;span id="lbl-s5-mid"&gt;50%（鼠径管・移動性）&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>&lt;span id="lbl-s5-max"&gt;100%（陰嚢底部）&lt;/span&gt;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;!-- Educational Note --&gt;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>&lt;div id="ui-note-box" class="bg-slate-900/60 border border-slate-800 rounded-xl p-3 text-[11px] text-slate-400 leading-relaxed mb-4"&gt;&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>// ==================== Hypospadias Classification Systems Data (EN / JA) ====================</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const CLASSIFICATION_SYSTEMS = {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>anatomical: {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>nameJa: "標準解剖学的分類 (Duckett分類)",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>nameEn: "Standard Anatomical (Duckett)",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>grades: [</p>
+<p class="p1"><span class="Apple-converted-space">          </span>{</p>
+<p class="p1"><span class="Apple-converted-space">            </span>id: "normal",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>labelJa: "正常 (Normal)",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>labelEn: "Normal",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>groupJa: "正常形態",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>groupEn: "Normal Anatomy",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>glans: 100, curvature: 0, scrotum: 100, meatus: 100, gonad: 100,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>descJa: "正常男性型外性器。外尿道口は亀頭先端に縦スリット状に開口し、包皮は全周性に亀頭を覆います。陰茎索（屈曲）や二分陰嚢はなく、両側精巣は陰嚢底部に下降しています。",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>descEn: "Normal male external genitalia. The urethral meatus opens at the glans apex, the prepuce is circumferential without dorsal hooding, there is no chordee, and both testes are descended in the scrotum."</p>
+<p class="p1"><span class="Apple-converted-space">          </span>},</p>
+<p class="p1"><span class="Apple-converted-space">          </span>{</p>
+<p class="p1"><span class="Apple-converted-space">            </span>id: "glanular",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>labelJa: "亀頭部 (Glanular)",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>labelEn: "Glanular",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>groupJa: "前方型 (Anterior)",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>groupEn: "Anterior",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>glans: 95, curvature: 5, scrotum: 98, meatus: 91, gonad: 100,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>descJa: "外尿道口が亀頭腹側（本来の先端より数mm近位）に開口する最も軽症のタイプ。背側包皮フード（Dorsal hood）を認めることが多いですが、陰茎索（屈曲）は通常認めないか極めて軽微です。",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>descEn: "Mildest form where the ectopic meatus opens on the ventral surface of the glans proximal to the tip. Typically accompanied by a dorsal preputial hood with absent or minimal chordee."</p>
+<p class="p1"><span class="Apple-converted-space">          </span>},</p>
+<p class="p1"><span class="Apple-converted-space">          </span>{</p>
+<p class="p1"><span class="Apple-converted-space">            </span>id: "coronal",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>labelJa: "冠状溝部 (Coronal)",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>labelEn: "Coronal / Subcoronal",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>groupJa: "前方型 (Anterior)",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>groupEn: "Anterior",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>glans: 90, curvature: 12, scrotum: 95, meatus: 80, gonad: 100,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>descJa: "外尿道口が亀頭冠のすぐ手前（冠状溝〜遠位陰茎幹部腹側）に開口する頻度の高い病型。外尿道口から亀頭先端にかけて浅い尿道溝（Urethral plate）が連続し、軽度の遠位屈曲を伴うことがあります。",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>descEn: "Common subtype where the meatus opens in the coronal or subcoronal sulcus just proximal to the glans. A shallow urethral plate extends distally to the glans tip; mild distal chordee may be present."</p>
+<p class="p1"><span class="Apple-converted-space">          </span>},</p>
+<p class="p1"><span class="Apple-converted-space">          </span>{</p>
+<p class="p1"><span class="Apple-converted-space">            </span>id: "shaft",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>labelJa: "陰茎幹部 (Shaft)",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>labelEn: "Penile Shaft",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>groupJa: "中間型 (Middle)",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>groupEn: "Middle",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>glans: 78, curvature: 35, scrotum: 85, meatus: 55, gonad: 95,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>descJa: "外尿道口が陰茎幹部（遠位・中央・近位幹部）の腹側に開口します。外尿道口より遠位は管腔化せず扁平な尿道板（桃色）として露出し、中等度の陰茎索（腹側屈曲）を伴うことが多くなります。",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>descEn: "The meatus opens along the ventral penile shaft (distal, mid, or proximal). Distal to the meatus, the open urethral plate is exposed, typically associated with moderate ventral chordee."</p>
+<p class="p1"><span class="Apple-converted-space">          </span>},</p>
+<p class="p1"><span class="Apple-converted-space">          </span>{</p>
+<p class="p1"><span class="Apple-converted-space">            </span>id: "penoscrotal",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>labelJa: "陰茎陰嚢部 (Penoscrotal)",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>labelEn: "Penoscrotal",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>groupJa: "後方型 (Posterior)",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>groupEn: "Posterior",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>glans: 62, curvature: 60, scrotum: 65, meatus: 32, gonad: 82,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>descJa: "外尿道口が陰茎と陰嚢の境界部（陰茎陰嚢移行部）に開口する重症型。高度の陰茎索（Chordee）による腹側屈曲と、陰嚢正中のくびれ（軽度〜中等度の二分陰嚢）を伴いやすくなります。",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>descEn: "Severe proximal form with the meatus located at the penoscrotal junction. Frequently associated with significant ventral chordee and early bifid scrotal configuration."</p>
+<p class="p1"><span class="Apple-converted-space">          </span>},</p>
+<p class="p1"><span class="Apple-converted-space">          </span>{</p>
+<p class="p1"><span class="Apple-converted-space">            </span>id: "scrotal",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>labelJa: "陰嚢部 (Scrotal)",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>labelEn: "Scrotal",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>groupJa: "後方型 (Posterior)",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>groupEn: "Posterior",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>glans: 46, curvature: 78, scrotum: 38, meatus: 16, gonad: 65,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>descJa: "陰嚢が正中で左右に分かれた「二分陰嚢（Bifid scrotum）」の溝の中に外尿道口が開口します。陰茎海綿体の発育不全・高度屈曲を伴い、停留精巣やDSD（性分化疾患）の精査対象となります。",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>descEn: "The urethral meatus opens between the halves of a deeply cleft bifid scrotum. Marked chordee and small phallic size are common; evaluation for undescended testes and DSD is indicated."</p>
+<p class="p1"><span class="Apple-converted-space">          </span>},</p>
+<p class="p1"><span class="Apple-converted-space">          </span>{</p>
+<p class="p1"><span class="Apple-converted-space">            </span>id: "perineal",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>labelJa: "会陰部 (Perineal)",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>labelEn: "Perineal",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>groupJa: "後方型 (Posterior)",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>groupEn: "Posterior",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>glans: 32, curvature: 92, scrotum: 15, meatus: 3, gonad: 45,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>descJa: "最重症の尿道下裂。陰嚢は左右に大きく分離し（大陰唇様）、外尿道口は陰嚢よりも後方（肛門前方）の会陰部に開口します。高度の屈曲と小陰茎を呈し、Prader III〜IV相当のDSDとの鑑別が重要です。",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>descEn: "Most severe form. The labioscrotal folds are widely separated (labia-like), and the meatus opens on the perineum posterior to the scrotum. Severe chordee and small phallus require comprehensive DSD workup."</p>
+<p class="p1"><span class="Apple-converted-space">          </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>]</p>
+<p class="p1"><span class="Apple-converted-space">      </span>},</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>barcat: {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>nameJa: "Barcat分類 (Anterior / Middle / Posterior)",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>nameEn: "Barcat Classification",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>grades: [</p>
+<p class="p1"><span class="Apple-converted-space">          </span>{</p>
+<p class="p1"><span class="Apple-converted-space">            </span>id: "ant_glanular",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>labelJa: "Anterior: 亀頭部",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>labelEn: "Anterior: Glanular",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>groupJa: "Anterior（前方型・約50%）",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>groupEn: "Anterior (~50%)",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>glans: 95, curvature: 5, scrotum: 98, meatus: 91, gonad: 100,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>descJa: "【Barcat 前方型】外尿道口が亀頭腹側に位置します。機能的な排尿・性機能障害は少なく、整容面および包皮形成・亀頭形成が治療の主眼となります。",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>descEn: "[Barcat Anterior] Meatus opens on the ventral glans. Minimal functional impairment; repair focuses on cosmesis and glanuloplasty/preputioplasty."</p>
+<p class="p1"><span class="Apple-converted-space">          </span>},</p>
+<p class="p1"><span class="Apple-converted-space">          </span>{</p>
+<p class="p1"><span class="Apple-converted-space">            </span>id: "ant_subcoronal",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>labelJa: "Anterior: 冠状溝下",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>labelEn: "Anterior: Subcoronal",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>groupJa: "Anterior（前方型・約50%）",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>groupEn: "Anterior (~50%)",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>glans: 88, curvature: 15, scrotum: 94, meatus: 79, gonad: 100,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>descJa: "【Barcat 前方型】外尿道口が冠状溝直下に位置します。TIP法（Snodgrass法）やMAGPI法などの一期的尿道形成術の良い適応となる代表的な病型です。",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>descEn: "[Barcat Anterior] Meatus opens just beneath the coronal sulcus. Classic candidate for single-stage tubularized incised plate (TIP) repair."</p>
+<p class="p1"><span class="Apple-converted-space">          </span>},</p>
+<p class="p1"><span class="Apple-converted-space">          </span>{</p>
+<p class="p1"><span class="Apple-converted-space">            </span>id: "mid_distal",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>labelJa: "Middle: 遠位陰茎",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>labelEn: "Middle: Distal Penile",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>groupJa: "Middle（中間型・約30%）",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>groupEn: "Middle (~30%)",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>glans: 82, curvature: 28, scrotum: 90, meatus: 65, gonad: 98,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>descJa: "【Barcat 中間型】陰茎幹部の遠位1/3腹側に外尿道口が開口。皮膚の索（Skin chordee）の剥離と尿道板の管腔化により一期的に修復可能なことが多い病型です。",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>descEn: "[Barcat Middle] Meatus on the distal third of the penile shaft. Often amenable to single-stage repair after release of skin chordee."</p>
+<p class="p1"><span class="Apple-converted-space">          </span>},</p>
+<p class="p1"><span class="Apple-converted-space">          </span>{</p>
+<p class="p1"><span class="Apple-converted-space">            </span>id: "mid_shaft",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>labelJa: "Middle: 陰茎中央〜近位",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>labelEn: "Middle: Mid-Proximal",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>groupJa: "Middle（中間型・約30%）",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>groupEn: "Middle (~30%)",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>glans: 72, curvature: 46, scrotum: 80, meatus: 46, gonad: 92,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>descJa: "【Barcat 中間型】陰茎幹部中央〜近位腹側に開口。真の海綿体屈曲（Corporal disproportion）の程度に応じて、背側プリケーション（縫縮）や尿道板離断の要否を判断します。",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>descEn: "[Barcat Middle] Meatus on the mid-to-proximal shaft. Degree of corporal curvature guides dorsal plication versus urethral plate transection."</p>
+<p class="p1"><span class="Apple-converted-space">          </span>},</p>
+<p class="p1"><span class="Apple-converted-space">          </span>{</p>
+<p class="p1"><span class="Apple-converted-space">            </span>id: "post_penoscrotal",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>labelJa: "Posterior: 陰茎陰嚢部",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>labelEn: "Posterior: Penoscrotal",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>groupJa: "Posterior（後方型・約20%）",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>groupEn: "Posterior (~20%)",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>glans: 58, curvature: 65, scrotum: 60, meatus: 30, gonad: 80,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>descJa: "【Barcat 後方型】陰茎陰嚢移行部に開口し、強い腹側屈曲を伴います。索切除（Chordee release）後の尿道欠損長が大きくなり、二期的手術（グラフト/フラップ）が選択されることが多い重症群です。",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>descEn: "[Barcat Posterior] Meatus at the penoscrotal junction with pronounced chordee. Often requires staged urethroplasty following ventral lengthening."</p>
+<p class="p1"><span class="Apple-converted-space">          </span>},</p>
+<p class="p1"><span class="Apple-converted-space">          </span>{</p>
+<p class="p1"><span class="Apple-converted-space">            </span>id: "post_scrotal_perineal",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>labelJa: "Posterior: 陰嚢・会陰部",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>labelEn: "Posterior: Scrotal/Perineal",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>groupJa: "Posterior（後方型・約20%）",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>groupEn: "Posterior (~20%)",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>glans: 36, curvature: 88, scrotum: 22, meatus: 6, gonad: 50,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>descJa: "【Barcat 後方型・最重症】二分陰嚢の深部または会陰部に開口。術前アンドロゲン補充療法（テストステロン筋注・外用）による亀頭・陰茎サイズ増大や、染色体・内分泌学的評価が重要となります。",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>descEn: "[Barcat Posterior - Severe] Meatus within a bifid scrotum or perineum. Preoperative androgen stimulation and karyotype/endocrine evaluation are frequently indicated."</p>
+<p class="p1"><span class="Apple-converted-space">          </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>]</p>
+<p class="p1"><span class="Apple-converted-space">      </span>},</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>browne: {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>nameJa: "Browne分類 (Denis Browne 1936)",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>nameEn: "Denis Browne Classification",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>grades: [</p>
+<p class="p1"><span class="Apple-converted-space">          </span>{</p>
+<p class="p1"><span class="Apple-converted-space">            </span>id: "db_1",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>labelJa: "1. 亀頭部 (Glanular)",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>labelEn: "1. Glanular",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>groupJa: "Browne Grade 1",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>groupEn: "Browne Grade 1",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>glans: 95, curvature: 5, scrotum: 98, meatus: 91, gonad: 100,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>descJa: "Denis Browne分類 第1度：亀頭腹側に開口するタイプ。",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>descEn: "Denis Browne Grade 1: Meatus located on the ventral aspect of the glans."</p>
+<p class="p1"><span class="Apple-converted-space">          </span>},</p>
+<p class="p1"><span class="Apple-converted-space">          </span>{</p>
+<p class="p1"><span class="Apple-converted-space">            </span>id: "db_2",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>labelJa: "2. 冠状溝部 (Subcoronal)",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>labelEn: "2. Subcoronal",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>groupJa: "Browne Grade 2",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>groupEn: "Browne Grade 2",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>glans: 89, curvature: 14, scrotum: 95, meatus: 79, gonad: 100,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>descJa: "Denis Browne分類 第2度：冠状溝直下に開口するタイプ。",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>descEn: "Denis Browne Grade 2: Meatus located immediately proximal to the coronal sulcus."</p>
+<p class="p1"><span class="Apple-converted-space">          </span>},</p>
+<p class="p1"><span class="Apple-converted-space">          </span>{</p>
+<p class="p1"><span class="Apple-converted-space">            </span>id: "db_3",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>labelJa: "3. 陰茎部 (Penile)",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>labelEn: "3. Penile",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>groupJa: "Browne Grade 3",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>groupEn: "Browne Grade 3",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>glans: 76, curvature: 38, scrotum: 84, meatus: 52, gonad: 94,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>descJa: "Denis Browne分類 第3度：陰茎幹部腹側に開口し、遠位に尿道溝と陰茎索を伴うタイプ。",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>descEn: "Denis Browne Grade 3: Meatus on the ventral penile shaft with distal urethral groove and chordee."</p>
+<p class="p1"><span class="Apple-converted-space">          </span>},</p>
+<p class="p1"><span class="Apple-converted-space">          </span>{</p>
+<p class="p1"><span class="Apple-converted-space">            </span>id: "db_4",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>labelJa: "4. 陰茎陰嚢部 (Penoscrotal)",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>labelEn: "4. Penoscrotal",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>groupJa: "Browne Grade 4",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>groupEn: "Browne Grade 4",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>glans: 60, curvature: 62, scrotum: 62, meatus: 31, gonad: 82,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>descJa: "Denis Browne分類 第4度：陰茎と陰嚢の移行部に開口するタイプ。",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>descEn: "Denis Browne Grade 4: Meatus situated at the penoscrotal junction."</p>
+<p class="p1"><span class="Apple-converted-space">          </span>},</p>
+<p class="p1"><span class="Apple-converted-space">          </span>{</p>
+<p class="p1"><span class="Apple-converted-space">            </span>id: "db_5",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>labelJa: "5. 陰嚢部 (Scrotal)",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>labelEn: "5. Scrotal",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>groupJa: "Browne Grade 5",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>groupEn: "Browne Grade 5",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>glans: 45, curvature: 80, scrotum: 35, meatus: 15, gonad: 62,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>descJa: "Denis Browne分類 第5度：二分陰嚢の間に開口するタイプ。",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>descEn: "Denis Browne Grade 5: Meatus opening between the cleft halves of a bifid scrotum."</p>
+<p class="p1"><span class="Apple-converted-space">          </span>},</p>
+<p class="p1"><span class="Apple-converted-space">          </span>{</p>
+<p class="p1"><span class="Apple-converted-space">            </span>id: "db_6",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>labelJa: "6. 会陰部 (Perineal)",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>labelEn: "6. Perineal",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>groupJa: "Browne Grade 6",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>groupEn: "Browne Grade 6",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>glans: 32, curvature: 92, scrotum: 14, meatus: 3, gonad: 45,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>descJa: "Denis Browne分類 第6度：陰嚢より後方の会陰部に開口する最重症タイプ。",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>descEn: "Denis Browne Grade 6: Meatus opening on the perineum behind the scrotal folds."</p>
+<p class="p1"><span class="Apple-converted-space">          </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>]</p>
+<p class="p1"><span class="Apple-converted-space">      </span>},</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>gms: {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>nameJa: "GMSスコア参考プリセット (Glans-Meatus-Shaft)",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>nameEn: "GMS Score Reference Presets",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>grades: [</p>
+<p class="p1"><span class="Apple-converted-space">          </span>{</p>
+<p class="p1"><span class="Apple-converted-space">            </span>id: "gms_mild",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>labelJa: "Mild (G1-M1-S1 / 3点)",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>labelEn: "Mild (Score 3: G1-M1-S1)",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>groupJa: "GMS 3–4点（軽症・合併症低リスク）",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>groupEn: "GMS 3–4 (Low Complication Risk)",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>glans: 96, curvature: 5, scrotum: 98, meatus: 88, gonad: 100,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>descJa: "【GMS 3点】G1（良好な亀頭サイズ・深い尿道溝）、M1（亀頭部/冠状溝）、S1（屈曲なし）。術後合併症リスクが最も低い群です。",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>descEn: "[GMS Score 3] G1 (good glans size, healthy urethral plate), M1 (glanular/subcoronal), S1 (no chordee). Lowest postoperative complication risk."</p>
+<p class="p1"><span class="Apple-converted-space">          </span>},</p>
+<p class="p1"><span class="Apple-converted-space">          </span>{</p>
+<p class="p1"><span class="Apple-converted-space">            </span>id: "gms_mod",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>labelJa: "Moderate (G2-M2-S2 / 6点)",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>labelEn: "Moderate (Score 6: G2-M2-S2)",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>groupJa: "GMS 5–7点（中等症）",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>groupEn: "GMS 5–7 (Moderate Severity)",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>glans: 76, curvature: 36, scrotum: 84, meatus: 54, gonad: 94,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>descJa: "【GMS 6点】G2（中等度の亀頭発育・平坦な尿道溝）、M2（陰茎幹部）、S2（軽度〜中等度の屈曲 &lt;30°）。",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>descEn: "[GMS Score 6] G2 (adequate glans size, slightly grooved plate), M2 (penile shaft), S2 (mild-to-moderate chordee &lt;30°)."</p>
+<p class="p1"><span class="Apple-converted-space">          </span>},</p>
+<p class="p1"><span class="Apple-converted-space">          </span>{</p>
+<p class="p1"><span class="Apple-converted-space">            </span>id: "gms_severe",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>labelJa: "Severe (G3-M3-S3 / 9点)",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>labelEn: "Severe (Score 9: G3-M3-S3)",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>groupJa: "GMS 8–10点（重症）",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>groupEn: "GMS 8–10 (Severe Phenotype)",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>glans: 55, curvature: 68, scrotum: 52, meatus: 28, gonad: 75,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>descJa: "【GMS 9点】G3（小さな亀頭・浅い尿道板）、M3（陰茎陰嚢部）、S3（高度屈曲 &gt;30°）。合併症リスクが高まり段階的修復が検討されます。",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>descEn: "[GMS Score 9] G3 (small glans, shallow/narrow plate), M3 (penoscrotal), S3 (severe chordee &gt;30°). Higher risk; staged repair often considered."</p>
+<p class="p1"><span class="Apple-converted-space">          </span>},</p>
+<p class="p1"><span class="Apple-converted-space">          </span>{</p>
+<p class="p1"><span class="Apple-converted-space">            </span>id: "gms_extreme",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>labelJa: "Extreme (G4-M4-S4 / 12点)",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>labelEn: "Extreme (Score 12: G4-M4-S4)",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>groupJa: "GMS 11–12点（最重症）",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>groupEn: "GMS 11–12 (Extreme Severity)",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>glans: 34, curvature: 90, scrotum: 18, meatus: 4, gonad: 48,</p>
+<p class="p1"><span class="Apple-converted-space">            </span>descJa: "【GMS 12点・満点】G4（極めて小さい亀頭・尿道板低形成）、M4（陰嚢・会陰部）、S4（最強度屈曲）。術前ホルモン治療やDSD精査が推奨されます。",</p>
+<p class="p1"><span class="Apple-converted-space">            </span>descEn: "[GMS Score 12] G4 (very small glans, indistinct urethral plate), M4 (scrotal/perineal), S4 (severe chordee). Preoperative hormone therapy and DSD evaluation recommended."</p>
+<p class="p1"><span class="Apple-converted-space">          </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>]</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// Bilingual Dictionary (EN / JA)</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const I18N = {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>en: {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>subtitle: "Pediatric Urology Education &amp; Family Counseling",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>title: "Hypospadias 3D Simulator",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>langBtn: "🌐 EN / 日本語",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>legendBtn: "ℹ️ Legend",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>sheetExpand: "▲ Sliders",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>sheetCollapse: "▼ Full 3D",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>sheetNormal: "◆ Split View",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>modeSchema: "🎨 Schematic",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>modeReal: "✨ Realistic",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>viewOblique: "Oblique View",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>viewVentral: "Ventral / Perineal (Meatus)",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>viewLateral: "Lateral (Chordee)",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>sagittalOn: "🔍 Sagittal: ON",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>sagittalOff: "🔍 Sagittal: OFF",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>legendSchema: "Anatomical Structures (Schematic Color)",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>legendReal: "Anatomical Structures (Realistic Tissue Mode)",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>legGlans: "Glans (Size &amp; Ventral Glanular Groove)",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>legCorpora: "Corpora Cavernosa (Paired Dorsal Shafts)",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>legMeatus: "Ectopic Urethral Meatus (Surface Orifice)",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>legUrethra: "Formed Urethra &amp; Spongiosum (Proximal)",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>legPlate: "Open Urethral Plate (Meatus to Glans Tip)",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>legHood: "Dorsal Preputial Hood (Ventral Defect)",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>legScrotum: "Scrotum ⇄ Bifid Scrotum ⇄ Labia-like Folds",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>legGonad: "Testes &amp; Descent Path (Scrotal ⇄ Inguinal ⇄ Abdominal)",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>sec1Title: "1. Select Classification System",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>sec2Title: "2. Select Grade / Type",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>sec3Title: "3. Continuous Anatomical Sliders",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>customBadge: "Custom Parameter Mode",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>customDesc: "Adjusting individual anatomical parameters independently. Because hypospadias severity depends not only on meatal position (M) but also on glans size (G) and chordee (S), you can freely combine any values.",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>s4Title: "1. Urethral Meatus Location (Glans Tip ⇄ Shaft ⇄ Perineum)",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>s4Min: "0% (Perineal)",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>s4Mid: "50% (Mid-Shaft)",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>s4Max: "100% (Normal Apex)",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>s2Title: "2. Ventral Curvature (Chordee)",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>s2Min: "0% (Straight)",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>s2Max: "100% (Severe Chordee)",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>s1Title: "3. Glans &amp; Phallic Size",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>s1Min: "Small (Hypoplastic)",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>s1Max: "Large (Well-Developed)",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>s3Title: "4. Scrotum ⇄ Bifid Scrotum ⇄ Labia-like Folds",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>s3Min: "0% (Unfused / Labia-like)",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>s3Mid: "50% (Bifid Scrotum)",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>s3Max: "100% (Fused Scrotum)",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>s5Title: "5. Testicular (Gonadal) Position",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>s5Min: "0% (Intra-abdominal)",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>s5Mid: "50% (Inguinal Canal)",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>s5Max: "100% (Scrotal Sac)",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>gonadLoc: ["Abdominal", "Internal Ring / Upper Canal", "Inguinal Canal / External Ring", "High Scrotal", "Scrotal Sac"],</p>
+<p class="p1"><span class="Apple-converted-space">        </span>noteHtml: "&lt;strong class='text-slate-200'&gt;💡 Clinical Counseling &amp; Surgical Planning Note:&lt;/strong&gt;&lt;br/&gt;In hypospadias, the true severity is determined by the combination of &lt;strong&gt;meatal position&lt;/strong&gt;, &lt;strong&gt;chordee after degloving&lt;/strong&gt;, &lt;strong&gt;urethral plate quality&lt;/strong&gt;, and &lt;strong&gt;glans width&lt;/strong&gt;. Use the ventral and lateral camera views to explain surgical repair goals to families."</p>
+<p class="p1"><span class="Apple-converted-space">      </span>},</p>
+<p class="p1"><span class="Apple-converted-space">      </span>ja: {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>subtitle: "小児泌尿器科 医学教育・ご家族説明支援ツール",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>title: "尿道下裂 3D形態シミュレーター",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>langBtn: "🌐 日本語 / EN",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>legendBtn: "ℹ️ 凡例",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>sheetExpand: "▲ スライダー拡大",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>sheetCollapse: "▼ 3D全画面",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>sheetNormal: "◆ 標準分割",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>modeSchema: "🎨 模式図",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>modeReal: "✨ 写実",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>viewOblique: "斜め（全体）",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>viewVentral: "腹側・会陰（尿道口・尿道板）",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>viewLateral: "側面（陰茎索・屈曲）",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>sagittalOn: "🔍 矢状断: ON",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>sagittalOff: "🔍 矢状断: OFF",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>legendSchema: "解剖学的構造（模式図カラー）",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>legendReal: "解剖学的構造（写実スキン・粘膜カラー）",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>legGlans: "亀頭（発育度・腹側亀頭溝）",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>legCorpora: "陰茎海綿体（背側左右一対）",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>legMeatus: "異所性外尿道口（陰茎腹側〜会陰の表面開口）",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>legUrethra: "形成済み尿道・尿道海綿体（外尿道口より近位）",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>legPlate: "未閉鎖の尿道板（Urethral Plate：外尿道口〜先端）",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>legHood: "背側包皮フード（Dorsal Hood / 腹側包皮欠損）",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>legScrotum: "陰嚢・陰唇陰嚢隆起（完全癒合 ⇄ 二分陰嚢）",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>legGonad: "精巣・下降経路（陰嚢内 ⇄ 鼠径管 ⇄ 腹腔内）",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>sec1Title: "1. 尿道下裂の分類システムを選択",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>sec2Title: "2. グレード・病型を選択",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>sec3Title: "3. 解剖学的細項目スライダー（アナログ調整）",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>customBadge: "カスタム調整モード",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>customDesc: "各解剖学的パラメータを独立して調整中です。実際の尿道下裂では、外尿道口の位置だけでなく「亀頭サイズ（G）」「陰茎索による屈曲度（S）」「二分陰嚢や停留精巣の合併」に個人差があるため、症例ごとの形態を自由に再現できます。",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>s4Title: "① 外尿道口の位置（亀頭先端 ⇄ 陰茎幹部 ⇄ 会陰部）",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>s4Min: "0%（会陰部 Perineal）",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>s4Mid: "50%（陰茎幹部 Shaft）",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>s4Max: "100%（正常先端 Tip）",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>s2Title: "② 陰茎海綿体屈曲の程度（陰茎索 / Chordee）",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>s2Min: "0%（屈曲なし・ストレート）",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>s2Max: "100%（高度屈曲 Severe Chordee）",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>s1Title: "③ 亀頭・陰茎サイズ（Glans Size &amp; Development）",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>s1Min: "小（小陰茎 / 亀頭低形成）",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>s1Max: "大（標準発育亀頭）",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>s3Title: "④ 陰嚢から陰唇への変化（完全陰嚢 ⇄ 二分陰嚢 ⇄ 陰唇様）",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>s3Min: "0%（分離・陰唇様）",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>s3Mid: "50%（二分陰嚢 Bifid）",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>s3Max: "100%（完全癒合陰嚢）",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>s5Title: "⑤ 精巣（性腺）の位置（腹腔内 ⇄ 鼠径管 ⇄ 陰嚢内）",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>s5Min: "0%（腹腔内停留）",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>s5Mid: "50%（鼠径管・移動性）",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>s5Max: "100%（陰嚢底部）",</p>
+<p class="p1"><span class="Apple-converted-space">        </span>gonadLoc: ["腹腔内", "内鼠径輪〜鼠径管上部", "鼠径管下部〜外鼠径輪", "陰嚢上部", "陰嚢底部"],</p>
+<p class="p1"><span class="Apple-converted-space">        </span>noteHtml: "&lt;strong class='text-slate-200'&gt;💡 家族説明・術前評価での活用ポイント：&lt;/strong&gt;&lt;br/&gt;尿道下裂の手術計画では、外尿道口の位置だけでなく&lt;strong&gt;「索切除後の屈曲（Chordee）」「尿道板（桃色）の幅と質」「亀頭サイズ」&lt;/strong&gt;が重要です。「腹側・会陰ビュー」や「側面ビュー」に切り替えることで、尿道形成の仕組みをご家族へ直感的に説明できます。"</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>let currentLang = 'ja';</p>
+<p class="p1"><span class="Apple-converted-space">    </span>let currentSystemKey = 'anatomical';</p>
+<p class="p1"><span class="Apple-converted-space">    </span>let activeGradeIndex = 2; // Default: Coronal hypospadias</p>
+<p class="p1"><span class="Apple-converted-space">    </span>let currentViewName = 'oblique';</p>
+<p class="p1"><span class="Apple-converted-space">    </span>let mobileSheetState = 'normal';</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>const state = { glans: 90, curvature: 12, scrotum: 95, meatus: 80, gonad: 100 };</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const targetState = { glans: 90, curvature: 12, scrotum: 95, meatus: 80, gonad: 100 };</p>
+<p class="p1"><span class="Apple-converted-space">    </span>let visualMode = 'schema';</p>
+<p class="p1"><span class="Apple-converted-space">    </span>let sagittalMode = false;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>const container = document.getElementById('canvas-container');</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const scene = new THREE.Scene();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>scene.background = new THREE.Color(0x0f172a);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>const camera = new THREE.PerspectiveCamera(40, container.clientWidth / container.clientHeight, 0.1, 100);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const renderer = new THREE.WebGLRenderer({ antialias: true });</p>
+<p class="p1"><span class="Apple-converted-space">    </span>renderer.setSize(container.clientWidth, container.clientHeight);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));</p>
+<p class="p1"><span class="Apple-converted-space">    </span>renderer.localClippingEnabled = true;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>container.appendChild(renderer.domElement);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>const controls = new THREE.OrbitControls(camera, renderer.domElement);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>controls.enableDamping = true;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>controls.dampingFactor = 0.08;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>controls.rotateSpeed = 0.85;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>controls.zoomSpeed = 0.9;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// Lighting</p>
+<p class="p1"><span class="Apple-converted-space">    </span>scene.add(new THREE.AmbientLight(0xffffff, 0.68));</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const mainLight = new THREE.DirectionalLight(0xfff7ed, 0.95);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>mainLight.position.set(6, 9, 8);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>scene.add(mainLight);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const fillLight = new THREE.DirectionalLight(0x93c5fd, 0.45);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>fillLight.position.set(-7, 2, 4);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>scene.add(fillLight);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const ventralLight = new THREE.DirectionalLight(0xfde68a, 0.65);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>ventralLight.position.set(0, -8, 6);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>scene.add(ventralLight);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>const clipPlane = new THREE.Plane(new THREE.Vector3(-1, 0, 0), 0.005);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function createScrotumBumpTexture() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const canvas = document.createElement('canvas');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>canvas.width = 256;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>canvas.height = 256;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const ctx = canvas.getContext('2d');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>ctx.fillStyle = '#808080';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>ctx.fillRect(0, 0, 256, 256);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>for (let y = 0; y &lt; 256; y += 4) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const v = Math.floor(128 + 65 * Math.sin(y * 0.35));</p>
+<p class="p1"><span class="Apple-converted-space">        </span>ctx.strokeStyle = `rgb(${v},${v},${v})`;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>ctx.lineWidth = 2;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>ctx.beginPath();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>for (let x = 0; x &lt;= 256; x += 8) {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>const dy = Math.sin(x * 0.12 + y * 0.05) * 4;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>if (x === 0) ctx.moveTo(x, y + dy);</p>
+<p class="p1"><span class="Apple-converted-space">          </span>else ctx.lineTo(x, y + dy);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>ctx.stroke();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const tex = new THREE.CanvasTexture(canvas);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>tex.wrapS = THREE.RepeatWrapping;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>tex.wrapT = THREE.RepeatWrapping;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>tex.repeat.set(2, 3);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>return tex;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const rugaeBumpTex = createScrotumBumpTexture();</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>const materials = {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>pelvis: new THREE.MeshPhysicalMaterial({ side: THREE.DoubleSide, transparent: true, depthWrite: false }),</p>
+<p class="p1"><span class="Apple-converted-space">      </span>bladder: new THREE.MeshPhysicalMaterial({ side: THREE.DoubleSide, transparent: true }),</p>
+<p class="p1"><span class="Apple-converted-space">      </span>corpora: new THREE.MeshPhysicalMaterial({ side: THREE.DoubleSide }),</p>
+<p class="p1"><span class="Apple-converted-space">      </span>skinHood: new THREE.MeshPhysicalMaterial({ side: THREE.DoubleSide, transparent: true }),</p>
+<p class="p1"><span class="Apple-converted-space">      </span>glans: new THREE.MeshPhysicalMaterial({ side: THREE.DoubleSide }),</p>
+<p class="p1"><span class="Apple-converted-space">      </span>tubularUrethra: new THREE.MeshPhysicalMaterial({ side: THREE.DoubleSide }),</p>
+<p class="p1"><span class="Apple-converted-space">      </span>urethralPlate: new THREE.MeshPhysicalMaterial({ side: THREE.DoubleSide }),</p>
+<p class="p1"><span class="Apple-converted-space">      </span>labiaScrotumLeft: new THREE.MeshPhysicalMaterial({ side: THREE.DoubleSide, transparent: true }),</p>
+<p class="p1"><span class="Apple-converted-space">      </span>labiaScrotumRight: new THREE.MeshPhysicalMaterial({ side: THREE.DoubleSide, transparent: true }),</p>
+<p class="p1"><span class="Apple-converted-space">      </span>meatusRing: new THREE.MeshPhysicalMaterial({</p>
+<p class="p1"><span class="Apple-converted-space">        </span>side: THREE.DoubleSide,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>polygonOffset: true,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>polygonOffsetFactor: -5,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>polygonOffsetUnits: -5</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}),</p>
+<p class="p1"><span class="Apple-converted-space">      </span>meatusLumen: new THREE.MeshBasicMaterial({</p>
+<p class="p1"><span class="Apple-converted-space">        </span>color: 0x050811,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>side: THREE.DoubleSide,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>polygonOffset: true,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>polygonOffsetFactor: -7,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>polygonOffsetUnits: -7</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}),</p>
+<p class="p1"><span class="Apple-converted-space">      </span>gonad: new THREE.MeshPhysicalMaterial({ side: THREE.DoubleSide }),</p>
+<p class="p1"><span class="Apple-converted-space">      </span>gonadTrack: new THREE.MeshPhysicalMaterial({ side: THREE.DoubleSide, transparent: true, opacity: 0.45 })</p>
+<p class="p1"><span class="Apple-converted-space">    </span>};</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function applyMaterialPalette() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const planes = sagittalMode ? [clipPlane] : [];</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const isReal = visualMode === 'realistic';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const dict = I18N[currentLang];</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>materials.pelvis.color.setHex(isReal ? 0xe5b899 : 0x334155);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>materials.pelvis.roughness = isReal ? 0.55 : 0.8;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>materials.pelvis.opacity = isReal ? 0.22 : 0.20;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>materials.pelvis.clippingPlanes = planes;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>materials.bladder.color.setHex(isReal ? 0xd97757 : 0xf59e0b);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>materials.bladder.roughness = 0.4;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>materials.bladder.opacity = sagittalMode ? 0.78 : 0.30;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>materials.bladder.clippingPlanes = planes;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>materials.corpora.color.setHex(isReal ? 0xd98a6c : 0x3b82f6);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>materials.corpora.roughness = isReal ? 0.42 : 0.35;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>materials.corpora.clippingPlanes = planes;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>// Dorsal Preputial Hood (Characteristic of hypospadias when meatus &lt; 98%)</p>
+<p class="p1"><span class="Apple-converted-space">      </span>materials.skinHood.color.setHex(isReal ? 0xe2a989 : 0x94a3b8);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>materials.skinHood.roughness = 0.52;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>materials.skinHood.opacity = isReal ? (sagittalMode ? 0.28 : 0.78) : 0.32;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>materials.skinHood.clippingPlanes = planes;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>materials.glans.color.setHex(isReal ? 0xc86d77 : 0xf472b6);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>materials.glans.roughness = isReal ? 0.28 : 0.35;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>materials.glans.clearcoat = isReal ? 0.35 : 0.05;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>materials.glans.clippingPlanes = planes;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>materials.tubularUrethra.color.setHex(isReal ? 0xb95863 : 0xeab308);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>materials.tubularUrethra.roughness = 0.25;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>materials.urethralPlate.color.setHex(isReal ? 0xd46a7e : 0xfb7185);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>materials.urethralPlate.roughness = 0.25;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const scrotumColor = isReal ? 0xc9886b : 0xd97706;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>[materials.labiaScrotumLeft, materials.labiaScrotumRight].forEach((mat) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>mat.color.setHex(scrotumColor);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>mat.roughness = isReal ? 0.58 : 0.5;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>mat.bumpMap = isReal ? rugaeBumpTex : null;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>mat.bumpScale = isReal ? 0.035 : 0;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>mat.opacity = isReal ? 0.72 : 0.62;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>mat.needsUpdate = true;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>});</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (sagittalMode) materials.labiaScrotumRight.opacity = 0.10;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>materials.meatusRing.color.setHex(isReal ? 0xfda4af : 0xfef08a);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>materials.meatusRing.emissive.setHex(isReal ? 0x4c0519 : 0x713f12);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>materials.meatusRing.emissiveIntensity = 0.4;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>materials.meatusRing.roughness = 0.18;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>materials.gonad.color.setHex(isReal ? 0xf1f5f9 : 0x10b981);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>materials.gonad.roughness = 0.25;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>materials.gonad.clearcoat = 0.3;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>materials.gonadTrack.color.setHex(isReal ? 0xfda4af : 0x34d399);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('legend-title').textContent = isReal ? dict.legendReal : dict.legendSchema;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('leg-glans').style.background = isReal ? '#c86d77' : '#f472b6';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('leg-corpora').style.background = isReal ? '#d98a6c' : '#3b82f6';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('leg-urethra').style.background = isReal ? '#b95863' : '#eab308';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('leg-plate').style.background = isReal ? '#d46a7e' : '#fb7185';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('leg-hood').style.background = isReal ? '#e2a989' : '#94a3b8';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('leg-scrotum').style.background = isReal ? '#c9886b' : '#d97706';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('leg-gonad').style.background = isReal ? '#f1f5f9' : '#10b981';</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>const rootGroup = new THREE.Group();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>scene.add(rootGroup);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// Pelvis &amp; Bladder Base</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const pelvisGeo = new THREE.SphereGeometry(2.2, 32, 24);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>pelvisGeo.scale(1.18, 1.05, 0.72);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const pelvisMesh = new THREE.Mesh(pelvisGeo, materials.pelvis);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>pelvisMesh.position.set(0, 0.55, -1.25);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>rootGroup.add(pelvisMesh);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>const bladderGeo = new THREE.SphereGeometry(0.42, 28, 20);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>bladderGeo.scale(1.1, 0.95, 0.95);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const bladderMesh = new THREE.Mesh(bladderGeo, materials.bladder);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>bladderMesh.position.set(0, 1.65, -0.92);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>rootGroup.add(bladderMesh);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// Labioscrotal Folds (Fused Scrotum &lt;-&gt; Bifid Scrotum &lt;-&gt; Labia-like)</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const foldGeo = new THREE.SphereGeometry(0.76, 36, 28);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const leftFold = new THREE.Mesh(foldGeo, materials.labiaScrotumLeft);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const rightFold = new THREE.Mesh(foldGeo, materials.labiaScrotumRight);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>rootGroup.add(leftFold, rightFold);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// Testes / Gonads &amp; Descent Tracks</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const gonadGeo = new THREE.SphereGeometry(0.22, 28, 20);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>gonadGeo.scale(0.85, 1.25, 0.9);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const leftGonadMesh = new THREE.Mesh(gonadGeo, materials.gonad);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const rightGonadMesh = new THREE.Mesh(gonadGeo, materials.gonad);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>let leftCordMesh = new THREE.Mesh(new THREE.BufferGeometry(), materials.gonadTrack);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>let rightCordMesh = new THREE.Mesh(new THREE.BufferGeometry(), materials.gonadTrack);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>rootGroup.add(leftGonadMesh, rightGonadMesh, leftCordMesh, rightCordMesh);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// Dynamic Meshes</p>
+<p class="p1"><span class="Apple-converted-space">    </span>let leftCorpusMesh = new THREE.Mesh(new THREE.BufferGeometry(), materials.corpora);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>let rightCorpusMesh = new THREE.Mesh(new THREE.BufferGeometry(), materials.corpora);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>let dorsalHoodMesh = new THREE.Mesh(new THREE.BufferGeometry(), materials.skinHood);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>let tubularUrethraMesh = new THREE.Mesh(new THREE.BufferGeometry(), materials.tubularUrethra);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>let leftPlateRidgeMesh = new THREE.Mesh(new THREE.BufferGeometry(), materials.urethralPlate);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>let rightPlateRidgeMesh = new THREE.Mesh(new THREE.BufferGeometry(), materials.urethralPlate);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>let centerPlateGrooveMesh = new THREE.Mesh(new THREE.BufferGeometry(), materials.urethralPlate);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>rootGroup.add(</p>
+<p class="p1"><span class="Apple-converted-space">      </span>leftCorpusMesh,</p>
+<p class="p1"><span class="Apple-converted-space">      </span>rightCorpusMesh,</p>
+<p class="p1"><span class="Apple-converted-space">      </span>dorsalHoodMesh,</p>
+<p class="p1"><span class="Apple-converted-space">      </span>tubularUrethraMesh,</p>
+<p class="p1"><span class="Apple-converted-space">      </span>leftPlateRidgeMesh,</p>
+<p class="p1"><span class="Apple-converted-space">      </span>rightPlateRidgeMesh,</p>
+<p class="p1"><span class="Apple-converted-space">      </span>centerPlateGrooveMesh</p>
+<p class="p1"><span class="Apple-converted-space">    </span>);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// Glans Group (With open ventral coronal sulcus so subcoronal/distal shaft meatus is never hidden)</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const glansGroup = new THREE.Group();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const glansMainGeo = new THREE.SphereGeometry(0.38, 32, 24);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>glansMainGeo.scale(0.98, 0.78, 1.22);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const glansMesh = new THREE.Mesh(glansMainGeo, materials.glans);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>glansMesh.position.set(0, 0.08, 0.08);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>const coronaGeo = new THREE.TorusGeometry(0.32, 0.068, 16, 32, Math.PI * 1.45);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const coronaMesh = new THREE.Mesh(coronaGeo, materials.glans);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>coronaMesh.rotation.z = -Math.PI * 0.225;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>coronaMesh.position.set(0, 0.06, -0.18);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>glansGroup.add(glansMesh, coronaMesh);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>rootGroup.add(glansGroup);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// Dorsal Preputial Hood Cuff (Redundant dorsal skin hood characteristic of hypospadias)</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const dorsalHoodCuffGeo = new THREE.TorusGeometry(0.34, 0.095, 16, 32, Math.PI * 1.25);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const dorsalHoodCuffMesh = new THREE.Mesh(dorsalHoodCuffGeo, materials.skinHood);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>dorsalHoodCuffMesh.rotation.z = -Math.PI * 0.125; // Open on the ventral side (ventral preputial deficiency)</p>
+<p class="p1"><span class="Apple-converted-space">    </span>glansGroup.add(dorsalHoodCuffMesh);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// External Urethral Meatus Marker</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const meatusGroup = new THREE.Group();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>const meatusRing = new THREE.Mesh(new THREE.TorusGeometry(0.115, 0.038, 20, 32), materials.meatusRing);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>meatusRing.scale.set(0.80, 1.28, 1.15);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>meatusRing.renderOrder = 20;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>const meatusLumen = new THREE.Mesh(new THREE.CircleGeometry(0.105, 24), materials.meatusLumen);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>meatusLumen.scale.set(0.78, 1.24, 1.0);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>meatusLumen.position.set(0, 0, 0.014);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>meatusLumen.renderOrder = 21;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>meatusGroup.add(meatusRing, meatusLumen);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>rootGroup.add(meatusGroup);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function rebuildMorphology() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const g = state.glans / 100;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const c = state.curvature / 100;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const s = state.scrotum / 100;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const m = state.meatus / 100;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const gn = state.gonad / 100;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>// --- 1. Scrotum / Bifid Scrotum / Labia-like Folds ---</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const xOffset = THREE.MathUtils.lerp(0.66, 0.27, s);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const yOffset = THREE.MathUtils.lerp(-0.18, -0.64, s);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const zOffset = THREE.MathUtils.lerp(0.02, 0.34, s);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const scaleX = THREE.MathUtils.lerp(0.42, 0.78, s);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const scaleY = THREE.MathUtils.lerp(1.22, 1.08, s);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const scaleZ = THREE.MathUtils.lerp(0.65, 0.92, s);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const rotZ = THREE.MathUtils.lerp(0.22, 0.03, s);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>leftFold.position.set(-xOffset, yOffset, zOffset);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>leftFold.scale.set(scaleX, scaleY, scaleZ);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>leftFold.rotation.set(0.18 * (1 - s), 0, -rotZ);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>rightFold.position.set(xOffset, yOffset, zOffset);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>rightFold.scale.set(scaleX, scaleY, scaleZ);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>rightFold.rotation.set(0.18 * (1 - s), 0, rotZ);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>// --- 2. Testicular / Gonadal Descent Path ---</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const scrotalBottomX = THREE.MathUtils.lerp(0.55, 0.28, s);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const scrotalBottomY = THREE.MathUtils.lerp(-0.45, -0.82, s);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const scrotalBottomZ = THREE.MathUtils.lerp(0.08, 0.38, s);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>function buildGonadPath(sign) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>return new THREE.CatmullRomCurve3([</p>
+<p class="p1"><span class="Apple-converted-space">          </span>new THREE.Vector3(sign * 0.92, 1.48, -1.15),</p>
+<p class="p1"><span class="Apple-converted-space">          </span>new THREE.Vector3(sign * 0.82, 1.05, -0.65),</p>
+<p class="p1"><span class="Apple-converted-space">          </span>new THREE.Vector3(sign * 0.64, 0.55, -0.10),</p>
+<p class="p1"><span class="Apple-converted-space">          </span>new THREE.Vector3(sign * 0.48, -0.05, 0.22),</p>
+<p class="p1"><span class="Apple-converted-space">          </span>new THREE.Vector3(sign * scrotalBottomX, scrotalBottomY, scrotalBottomZ)</p>
+<p class="p1"><span class="Apple-converted-space">        </span>]);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const leftGonadCurve = buildGonadPath(-1);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const rightGonadCurve = buildGonadPath(1);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>leftGonadMesh.position.copy(leftGonadCurve.getPointAt(gn));</p>
+<p class="p1"><span class="Apple-converted-space">      </span>rightGonadMesh.position.copy(rightGonadCurve.getPointAt(gn));</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>leftCordMesh.geometry.dispose();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>rightCordMesh.geometry.dispose();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>leftCordMesh.geometry = new THREE.TubeGeometry(leftGonadCurve, 32, 0.032, 10, false);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>rightCordMesh.geometry = new THREE.TubeGeometry(rightGonadCurve, 32, 0.032, 10, false);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>rightGonadMesh.visible = !sagittalMode;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>rightCordMesh.visible = !sagittalMode;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>// --- 3. Corpora Cavernosa &amp; Chordee Curvature ---</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const shaftLength = THREE.MathUtils.lerp(0.85, 2.75, g);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const singleCorpusRadius = THREE.MathUtils.lerp(0.11, 0.24, g);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const glansScale = THREE.MathUtils.lerp(0.42, 1.15, g);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const straightAngle = 0.18;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const maxBendAngle = 1.52;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const bendAngle = c * maxBendAngle;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const p0 = new THREE.Vector3(0, 0.52, -0.18);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const p1 = new THREE.Vector3(</p>
+<p class="p1"><span class="Apple-converted-space">        </span>0,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>p0.y + Math.sin(straightAngle - bendAngle * 0.35) * (shaftLength * 0.5),</p>
+<p class="p1"><span class="Apple-converted-space">        </span>p0.z + Math.cos(straightAngle - bendAngle * 0.35) * (shaftLength * 0.5)</p>
+<p class="p1"><span class="Apple-converted-space">      </span>);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const p2 = new THREE.Vector3(</p>
+<p class="p1"><span class="Apple-converted-space">        </span>0,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>p1.y + Math.sin(straightAngle - bendAngle * 0.95) * (shaftLength * 0.5),</p>
+<p class="p1"><span class="Apple-converted-space">        </span>p1.z + Math.cos(straightAngle - bendAngle * 0.95) * (shaftLength * 0.5)</p>
+<p class="p1"><span class="Apple-converted-space">      </span>);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const centerShaftCurve = new THREE.QuadraticBezierCurve3(p0, p1, p2);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const latOffset = singleCorpusRadius * 0.82;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const leftPts = [];</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const rightPts = [];</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const hoodPts = [];</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const SAMPLES = 32;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>for (let i = 0; i &lt;= SAMPLES; i++) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const t = i / SAMPLES;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const pt = centerShaftCurve.getPointAt(t);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const tan = centerShaftCurve.getTangentAt(t).normalize();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const dorsalNormal = new THREE.Vector3(0, tan.z, -tan.y).normalize();</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>leftPts.push(new THREE.Vector3(-latOffset, pt.y, pt.z));</p>
+<p class="p1"><span class="Apple-converted-space">        </span>rightPts.push(new THREE.Vector3(latOffset, pt.y, pt.z));</p>
+<p class="p1"><span class="Apple-converted-space">        </span>hoodPts.push(pt.clone().add(dorsalNormal.multiplyScalar(singleCorpusRadius * 0.45)));</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>leftCorpusMesh.geometry.dispose();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>rightCorpusMesh.geometry.dispose();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>leftCorpusMesh.geometry = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(leftPts), 32, singleCorpusRadius, 18, false);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>rightCorpusMesh.geometry = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(rightPts), 32, singleCorpusRadius, 18, false);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>rightCorpusMesh.visible = !sagittalMode;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>dorsalHoodMesh.geometry.dispose();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>dorsalHoodMesh.geometry = new THREE.TubeGeometry(</p>
+<p class="p1"><span class="Apple-converted-space">        </span>new THREE.CatmullRomCurve3(hoodPts),</p>
+<p class="p1"><span class="Apple-converted-space">        </span>32,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>singleCorpusRadius * 1.65,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>20,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>false</p>
+<p class="p1"><span class="Apple-converted-space">      </span>);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>dorsalHoodMesh.scale.set(1.08, 0.82, 1.0);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>// --- 4. Glans &amp; Dorsal Preputial Hood Placement ---</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const shaftEndTan = centerShaftCurve.getTangentAt(1.0).normalize();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const endVentNorm = new THREE.Vector3(0, -shaftEndTan.z, shaftEndTan.y).normalize();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>glansGroup.position.copy(p2);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>glansGroup.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), shaftEndTan);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>glansGroup.scale.setScalar(glansScale);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>// Dorsal preputial hood is prominent in hypospadias (m &lt; 0.96) and becomes circumferential at m=1.0</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const hoodSeverity = THREE.MathUtils.clamp((0.97 - m) * 3.5, 0, 1);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>dorsalHoodCuffMesh.visible = hoodSeverity &gt; 0.05;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>dorsalHoodCuffMesh.position.set(0, 0.14 + 0.04 * hoodSeverity, -0.14);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>dorsalHoodCuffMesh.scale.set(1.05, 0.85 + 0.25 * hoodSeverity, 1.0 + 0.35 * hoodSeverity);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>// --- 5. Unobstructed Ventral Surface Trajectory (Perineum -&gt; Ventral Shaft -&gt; Subcoronal -&gt; Glans Tip) ---</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const ventralSurfaceOffset = singleCorpusRadius * 1.18;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const glansTipDist = 0.56 * glansScale;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const bladderNeckPt = new THREE.Vector3(0, 1.32, -0.92);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const prostaticUrethraPt = new THREE.Vector3(0, 0.82, -0.74);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const membranousUrethraPt = new THREE.Vector3(0, 0.28, -0.52);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const perinealVestibulePt = new THREE.Vector3(0, -0.26, -0.14);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const rootTan = centerShaftCurve.getTangentAt(0.0).normalize();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const rootVentNorm = new THREE.Vector3(0, -rootTan.z, rootTan.y).normalize();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const shaftRootVentralPt = p0.clone().add(rootVentNorm.clone().multiplyScalar(ventralSurfaceOffset));</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const bulbarBridgePt = new THREE.Vector3(</p>
+<p class="p1"><span class="Apple-converted-space">        </span>0,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>THREE.MathUtils.lerp(perinealVestibulePt.y, shaftRootVentralPt.y, 0.45) - 0.03 * (1 - c * 0.5),</p>
+<p class="p1"><span class="Apple-converted-space">        </span>THREE.MathUtils.lerp(perinealVestibulePt.z, shaftRootVentralPt.z, 0.62)</p>
+<p class="p1"><span class="Apple-converted-space">      </span>);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const externalCoursePts = [perinealVestibulePt, bulbarBridgePt];</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const SHAFT_STEPS = 18;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>for (let i = 0; i &lt;= SHAFT_STEPS; i++) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const t = (i / SHAFT_STEPS) * 0.88;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const centerPt = centerShaftCurve.getPointAt(t);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const tan = centerShaftCurve.getTangentAt(t).normalize();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const ventralNormal = new THREE.Vector3(0, -tan.z, tan.y).normalize();</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const ventralPt = centerPt.clone().add(ventralNormal.multiplyScalar(ventralSurfaceOffset));</p>
+<p class="p1"><span class="Apple-converted-space">        </span>externalCoursePts.push(ventralPt);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const subCoronalCenter = centerShaftCurve.getPointAt(0.94);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const subCoronalTan = centerShaftCurve.getTangentAt(0.94).normalize();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const subCoronalVentNorm = new THREE.Vector3(0, -subCoronalTan.z, subCoronalTan.y).normalize();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const subCoronalSurfacePt = subCoronalCenter.clone().add(subCoronalVentNorm.multiplyScalar(ventralSurfaceOffset * 1.04));</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const glansVentralCleftPt = p2.clone()</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.add(shaftEndTan.clone().multiplyScalar(glansTipDist * 0.48))</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.add(endVentNorm.clone().multiplyScalar(0.24 * glansScale));</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const glansApexMeatus = p2.clone()</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.add(shaftEndTan.clone().multiplyScalar(glansTipDist))</p>
+<p class="p1"><span class="Apple-converted-space">        </span>.add(endVentNorm.clone().multiplyScalar(-0.04 * glansScale));</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>externalCoursePts.push(subCoronalSurfacePt, glansVentralCleftPt, glansApexMeatus);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const externalVentralCurve = new THREE.CatmullRomCurve3(externalCoursePts, false, 'centripetal', 0.5);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>// (A) Formed Tubular Urethra (from Bladder Neck up to current External Urethral Meatus `m`)</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const masterTubularPts = [</p>
+<p class="p1"><span class="Apple-converted-space">        </span>bladderNeckPt,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>prostaticUrethraPt,</p>
+<p class="p1"><span class="Apple-converted-space">        </span>membranousUrethraPt</p>
+<p class="p1"><span class="Apple-converted-space">      </span>];</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const EXT_SAMPLES = 36;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>for (let i = 0; i &lt;= EXT_SAMPLES; i++) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const u = (i / EXT_SAMPLES) * m;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (m &lt; 0.005 &amp;&amp; i &gt; 0) break;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>masterTubularPts.push(externalVentralCurve.getPointAt(u));</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const tubularUrethraCurve = new THREE.CatmullRomCurve3(masterTubularPts, false, 'centripetal', 0.5);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const urethraRadius = THREE.MathUtils.lerp(0.056, 0.092, g);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>tubularUrethraMesh.geometry.dispose();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>tubularUrethraMesh.geometry = new THREE.TubeGeometry(tubularUrethraCurve, 56, urethraRadius, 18, false);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>// (B) External Urethral Meatus Placement</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const meatusCurvePos = externalVentralCurve.getPointAt(m);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const meatusTan = externalVentralCurve.getTangentAt(m).normalize();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const ventNormAtMeatus = new THREE.Vector3(0, -meatusTan.z, meatusTan.y).normalize();</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const blendFactor = THREE.MathUtils.smoothstep(m, 0.86, 0.99);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const openingDir = ventNormAtMeatus.clone().lerp(meatusTan, blendFactor).normalize();</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const surfaceMeatusPos = meatusCurvePos.clone().add(openingDir.clone().multiplyScalar(urethraRadius * 0.72));</p>
+<p class="p1"><span class="Apple-converted-space">      </span>meatusGroup.position.copy(surfaceMeatusPos);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>meatusGroup.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), openingDir);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const meatusScale = THREE.MathUtils.lerp(0.85, 1.18, g);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>meatusGroup.scale.setScalar(meatusScale);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>// (C) Non-Overlapping Open Urethral Plate (Distal to Meatus Rim)</p>
+<p class="p1"><span class="Apple-converted-space">      </span>leftPlateRidgeMesh.geometry.dispose();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>rightPlateRidgeMesh.geometry.dispose();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>centerPlateGrooveMesh.geometry.dispose();</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const meatusClearanceU = 0.035;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const plateStartU = m + meatusClearanceU;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (plateStartU &lt; 0.985) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const leftRidgePts = [];</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const rightRidgePts = [];</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const centerGroovePts = [];</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const PLATE_SAMPLES = 24;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const plateHalfWidth = urethraRadius * 0.50;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>for (let i = 0; i &lt;= PLATE_SAMPLES; i++) {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>const u = plateStartU + (1.0 - plateStartU) * (i / PLATE_SAMPLES);</p>
+<p class="p1"><span class="Apple-converted-space">          </span>const pt = externalVentralCurve.getPointAt(u);</p>
+<p class="p1"><span class="Apple-converted-space">          </span>const tan = externalVentralCurve.getTangentAt(u).normalize();</p>
+<p class="p1"><span class="Apple-converted-space">          </span>const vNorm = new THREE.Vector3(0, -tan.z, tan.y).normalize();</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">          </span>const groovePt = pt.clone().add(vNorm.clone().multiplyScalar(urethraRadius * 0.18));</p>
+<p class="p1"><span class="Apple-converted-space">          </span>const ridgeSurfacePt = pt.clone().add(vNorm.clone().multiplyScalar(urethraRadius * 0.36));</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">          </span>centerGroovePts.push(groovePt);</p>
+<p class="p1"><span class="Apple-converted-space">          </span>leftRidgePts.push(new THREE.Vector3(-plateHalfWidth, ridgeSurfacePt.y, ridgeSurfacePt.z));</p>
+<p class="p1"><span class="Apple-converted-space">          </span>rightRidgePts.push(new THREE.Vector3(plateHalfWidth, ridgeSurfacePt.y, ridgeSurfacePt.z));</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>const ridgeRadius = urethraRadius * 0.32;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>leftPlateRidgeMesh.geometry = new THREE.TubeGeometry(</p>
+<p class="p1"><span class="Apple-converted-space">          </span>new THREE.CatmullRomCurve3(leftRidgePts, false, 'centripetal', 0.5),</p>
+<p class="p1"><span class="Apple-converted-space">          </span>24,</p>
+<p class="p1"><span class="Apple-converted-space">          </span>ridgeRadius,</p>
+<p class="p1"><span class="Apple-converted-space">          </span>12,</p>
+<p class="p1"><span class="Apple-converted-space">          </span>false</p>
+<p class="p1"><span class="Apple-converted-space">        </span>);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>rightPlateRidgeMesh.geometry = new THREE.TubeGeometry(</p>
+<p class="p1"><span class="Apple-converted-space">          </span>new THREE.CatmullRomCurve3(rightRidgePts, false, 'centripetal', 0.5),</p>
+<p class="p1"><span class="Apple-converted-space">          </span>24,</p>
+<p class="p1"><span class="Apple-converted-space">          </span>ridgeRadius,</p>
+<p class="p1"><span class="Apple-converted-space">          </span>12,</p>
+<p class="p1"><span class="Apple-converted-space">          </span>false</p>
+<p class="p1"><span class="Apple-converted-space">        </span>);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>centerPlateGrooveMesh.geometry = new THREE.TubeGeometry(</p>
+<p class="p1"><span class="Apple-converted-space">          </span>new THREE.CatmullRomCurve3(centerGroovePts, false, 'centripetal', 0.5),</p>
+<p class="p1"><span class="Apple-converted-space">          </span>24,</p>
+<p class="p1"><span class="Apple-converted-space">          </span>ridgeRadius * 1.1,</p>
+<p class="p1"><span class="Apple-converted-space">          </span>12,</p>
+<p class="p1"><span class="Apple-converted-space">          </span>false</p>
+<p class="p1"><span class="Apple-converted-space">        </span>);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>leftPlateRidgeMesh.visible = true;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>rightPlateRidgeMesh.visible = !sagittalMode;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>centerPlateGrooveMesh.visible = true;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>leftPlateRidgeMesh.visible = false;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>rightPlateRidgeMesh.visible = false;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>centerPlateGrooveMesh.visible = false;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>// ==================== Classification System &amp; Grade Management ====================</p>
+<p class="p1"><span class="Apple-converted-space">    </span>function selectClassificationSystem(sysKey) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>currentSystemKey = sysKey;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const sysKeys = ['anatomical', 'barcat', 'browne', 'gms'];</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>sysKeys.forEach((k) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const btn = document.getElementById(`sys-btn-${k}`);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (k === sysKey) {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>btn.className = "sys-btn py-1.5 px-2 rounded-lg text-[11px] md:text-xs font-bold border border-sky-400 bg-sky-600 text-white shadow text-left truncate";</p>
+<p class="p1"><span class="Apple-converted-space">        </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>btn.className = "sys-btn py-1.5 px-2 rounded-lg text-[11px] md:text-xs font-bold border border-slate-700 bg-slate-800 text-slate-300 hover:bg-slate-700 text-left truncate";</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">      </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>renderGradeButtons();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>// Select a representative mid-tier grade (e.g., index 2 or 1) when switching systems</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const defaultIdx = Math.min(2, CLASSIFICATION_SYSTEMS[sysKey].grades.length - 1);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>applyGrade(defaultIdx);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function renderGradeButtons() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const containerEl = document.getElementById('grade-buttons-container');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>containerEl.innerHTML = '';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const sys = CLASSIFICATION_SYSTEMS[currentSystemKey];</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>sys.grades.forEach((grade, idx) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const btn = document.createElement('button');</p>
+<p class="p1"><span class="Apple-converted-space">        </span>btn.id = `grade-btn-${idx}`;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>btn.textContent = currentLang === 'ja' ? grade.labelJa : grade.labelEn;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>btn.onclick = () =&gt; applyGrade(idx);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>btn.className = idx === activeGradeIndex</p>
+<p class="p1"><span class="Apple-converted-space">          </span>? "grade-btn py-1.5 px-2.5 rounded-lg text-xs font-bold border border-emerald-400 bg-emerald-600 text-white shadow"</p>
+<p class="p1"><span class="Apple-converted-space">          </span>: "grade-btn py-1.5 px-2.5 rounded-lg text-xs font-bold border border-slate-700 bg-slate-800 text-slate-300 hover:bg-slate-700";</p>
+<p class="p1"><span class="Apple-converted-space">        </span>containerEl.appendChild(btn);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>});</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function applyGrade(index) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>activeGradeIndex = index;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const sys = CLASSIFICATION_SYSTEMS[currentSystemKey];</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const grade = sys.grades[index];</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (!grade) return;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>targetState.glans = grade.glans;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>targetState.curvature = grade.curvature;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>targetState.scrotum = grade.scrotum;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>targetState.meatus = grade.meatus;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>targetState.gonad = grade.gonad;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('slider-glans').value = grade.glans;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('slider-curvature').value = grade.curvature;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('slider-scrotum').value = grade.scrotum;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('slider-meatus').value = grade.meatus;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('slider-gonad').value = grade.gonad;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>updateSliderLabels(grade.glans, grade.curvature, grade.scrotum, grade.meatus, grade.gonad);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>const labelText = currentLang === 'ja' ? grade.labelJa : grade.labelEn;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const descText = currentLang === 'ja' ? grade.descJa : grade.descEn;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('current-grade-badge').textContent = labelText;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('mobile-sheet-status').textContent = labelText;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('grade-desc').textContent = descText;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.querySelectorAll('.grade-btn').forEach((btn, i) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (i === index) {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>btn.className = "grade-btn py-1.5 px-2.5 rounded-lg text-xs font-bold border border-emerald-400 bg-emerald-600 text-white shadow";</p>
+<p class="p1"><span class="Apple-converted-space">        </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>btn.className = "grade-btn py-1.5 px-2.5 rounded-lg text-xs font-bold border border-slate-700 bg-slate-800 text-slate-300 hover:bg-slate-700";</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">      </span>});</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function onManualSliderChange() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>activeGradeIndex = null;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const dict = I18N[currentLang];</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const g = Number(document.getElementById('slider-glans').value);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const c = Number(document.getElementById('slider-curvature').value);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const s = Number(document.getElementById('slider-scrotum').value);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const m = Number(document.getElementById('slider-meatus').value);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const gn = Number(document.getElementById('slider-gonad').value);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>targetState.glans = g;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>targetState.curvature = c;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>targetState.scrotum = s;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>targetState.meatus = m;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>targetState.gonad = gn;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>updateSliderLabels(g, c, s, m, gn);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('current-grade-badge').textContent = dict.customBadge;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('mobile-sheet-status').textContent = dict.customBadge;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('grade-desc').textContent = dict.customDesc;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.querySelectorAll('.grade-btn').forEach((btn) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>btn.className = "grade-btn py-1.5 px-2.5 rounded-lg text-xs font-bold border border-slate-700 bg-slate-800 text-slate-300 hover:bg-slate-700";</p>
+<p class="p1"><span class="Apple-converted-space">      </span>});</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function updateSliderLabels(g, c, s, m, gn) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('val-glans').textContent = `${g}%`;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('val-curvature').textContent = `${c}%`;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('val-scrotum').textContent = `${s}%`;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('val-meatus').textContent = `${m}%`;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('val-gonad').textContent = getGonadLocationText(gn);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function getGonadLocationText(val) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const locs = I18N[currentLang].gonadLoc;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (val &lt; 15) return `${val}% (${locs[0]})`;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (val &lt; 40) return `${val}% (${locs[1]})`;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (val &lt; 75) return `${val}% (${locs[2]})`;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (val &lt; 92) return `${val}% (${locs[3]})`;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>return `${val}% (${locs[4]})`;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function toggleLanguage() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>currentLang = currentLang === 'en' ? 'ja' : 'en';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.documentElement.lang = currentLang;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>renderLanguageUI();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>renderGradeButtons();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (activeGradeIndex !== null) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>applyGrade(activeGradeIndex);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>onManualSliderChange();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function renderLanguageUI() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const d = I18N[currentLang];</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('ui-subtitle').textContent = d.subtitle;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('ui-title').innerHTML = `${d.title} &lt;span class="text-[10px] font-normal text-sky-400"&gt;v1.0&lt;/span&gt;`;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('btn-lang').textContent = d.langBtn;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('btn-legend-toggle').textContent = d.legendBtn;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('btn-mode-schema').textContent = d.modeSchema;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('btn-mode-realistic').textContent = d.modeReal;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('btn-view-oblique').textContent = d.viewOblique;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('btn-view-ventral').textContent = d.viewVentral;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('btn-view-lateral').textContent = d.viewLateral;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('btn-sagittal').textContent = sagittalMode ? d.sagittalOn : d.sagittalOff;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('btn-sheet-expand').textContent = mobileSheetState === 'expanded' ? d.sheetNormal : d.sheetExpand;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('btn-sheet-collapse').textContent = mobileSheetState === 'collapsed' ? d.sheetNormal : d.sheetCollapse;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('legend-title').textContent = visualMode === 'realistic' ? d.legendReal : d.legendSchema;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('leg-text-glans').textContent = d.legGlans;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('leg-text-corpora').textContent = d.legCorpora;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('leg-text-meatus').textContent = d.legMeatus;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('leg-text-urethra').textContent = d.legUrethra;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('leg-text-plate').textContent = d.legPlate;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('leg-text-hood').textContent = d.legHood;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('leg-text-scrotum').textContent = d.legScrotum;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('leg-text-gonad').textContent = d.legGonad;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('ui-sec1-title').textContent = d.sec1Title;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('ui-sec2-title').textContent = d.sec2Title;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('ui-sec3-title').textContent = d.sec3Title;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('lbl-s4-title').textContent = d.s4Title;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('lbl-s4-min').textContent = d.s4Min;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('lbl-s4-mid').textContent = d.s4Mid;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('lbl-s4-max').textContent = d.s4Max;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('lbl-s2-title').textContent = d.s2Title;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('lbl-s2-min').textContent = d.s2Min;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('lbl-s2-max').textContent = d.s2Max;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('lbl-s1-title').textContent = d.s1Title;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('lbl-s1-min').textContent = d.s1Min;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('lbl-s1-max').textContent = d.s1Max;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('lbl-s3-title').textContent = d.s3Title;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('lbl-s3-min').textContent = d.s3Min;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('lbl-s3-mid').textContent = d.s3Mid;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('lbl-s3-max').textContent = d.s3Max;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('lbl-s5-title').textContent = d.s5Title;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('lbl-s5-min').textContent = d.s5Min;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('lbl-s5-mid').textContent = d.s5Mid;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('lbl-s5-max').textContent = d.s5Max;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('ui-note-box').innerHTML = d.noteHtml;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function setVisualMode(mode) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>visualMode = mode;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const btnSchema = document.getElementById('btn-mode-schema');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const btnReal = document.getElementById('btn-mode-realistic');</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (mode === 'schema') {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>btnSchema.className = "flex-1 py-1 px-2 text-[11px] md:text-xs rounded-lg font-bold bg-sky-600 text-white border border-sky-400 transition truncate";</p>
+<p class="p1"><span class="Apple-converted-space">        </span>btnReal.className = "flex-1 py-1 px-2 text-[11px] md:text-xs rounded-lg font-bold bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700 transition truncate";</p>
+<p class="p1"><span class="Apple-converted-space">      </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>btnReal.className = "flex-1 py-1 px-2 text-[11px] md:text-xs rounded-lg font-bold bg-amber-600 text-white border border-amber-300 transition truncate";</p>
+<p class="p1"><span class="Apple-converted-space">        </span>btnSchema.className = "flex-1 py-1 px-2 text-[11px] md:text-xs rounded-lg font-bold bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700 transition truncate";</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>applyMaterialPalette();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>rebuildMorphology();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function setMobileSheetState(mode) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (window.innerWidth &gt;= 768) return;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const vp = document.getElementById('viewport-wrapper');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const cp = document.getElementById('control-panel');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const btnExp = document.getElementById('btn-sheet-expand');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const btnCol = document.getElementById('btn-sheet-collapse');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const d = I18N[currentLang];</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>mobileSheetState = (mobileSheetState === mode) ? 'normal' : mode;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (mobileSheetState === 'collapsed') {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>vp.style.height = '82dvh';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>cp.style.height = '18dvh';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>btnCol.textContent = d.sheetNormal;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>btnExp.textContent = d.sheetExpand;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>} else if (mobileSheetState === 'expanded') {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>vp.style.height = '32dvh';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>cp.style.height = '68dvh';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>btnExp.textContent = d.sheetNormal;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>btnCol.textContent = d.sheetCollapse;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>vp.style.height = '52dvh';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>cp.style.height = '48dvh';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>btnExp.textContent = d.sheetExpand;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>btnCol.textContent = d.sheetCollapse;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>setTimeout(handleViewportResize, 50);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>setTimeout(handleViewportResize, 320);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function toggleMobileLegend() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>document.getElementById('legend-box').classList.toggle('hidden');</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function setCameraView(view) {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>currentViewName = view;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const aspect = container.clientWidth / Math.max(container.clientHeight, 1);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const distScale = aspect &lt; 0.85 ? 1.25 : (aspect &lt; 1.1 ? 1.12 : 1.0);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const yTargetOffset = aspect &lt; 0.9 ? 0.22 : 0.0;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (view === 'oblique') {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>camera.position.set(5.4 * distScale, 2.0 * distScale, 6.4 * distScale);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>controls.target.set(0, 0.15 + yTargetOffset, 0.25);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>} else if (view === 'lateral') {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>camera.position.set(7.2 * distScale, 0.35, 0.1);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>controls.target.set(0, 0.20 + yTargetOffset, 0.1);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>} else if (view === 'ventral') {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>camera.position.set(0, -4.8 * distScale, 4.4 * distScale);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>controls.target.set(0, 0.0 + yTargetOffset * 0.5, 0.35);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p1"><span class="Apple-converted-space">      </span>controls.update();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function toggleSagittal() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>sagittalMode = !sagittalMode;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const dict = I18N[currentLang];</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const btn = document.getElementById('btn-sagittal');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>btn.textContent = sagittalMode ? dict.sagittalOn : dict.sagittalOff;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>btn.className = sagittalMode</p>
+<p class="p1"><span class="Apple-converted-space">        </span>? "py-1 px-2 text-[11px] md:text-xs rounded-lg bg-sky-600 border border-sky-300 text-white transition font-semibold shrink-0"</p>
+<p class="p1"><span class="Apple-converted-space">        </span>: "py-1 px-2 text-[11px] md:text-xs rounded-lg bg-indigo-900/90 border border-indigo-400 text-indigo-100 hover:bg-indigo-700 transition font-semibold shrink-0";</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>applyMaterialPalette();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (sagittalMode) setCameraView('lateral');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>rebuildMorphology();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function handleViewportResize() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const vp = document.getElementById('viewport-wrapper');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const cp = document.getElementById('control-panel');</p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (window.innerWidth &gt;= 768) {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>vp.style.height = '';</p>
+<p class="p1"><span class="Apple-converted-space">        </span>cp.style.height = '';</p>
+<p class="p1"><span class="Apple-converted-space">      </span>}</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const w = container.clientWidth;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>const h = Math.max(container.clientHeight, 1);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>camera.aspect = w / h;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>camera.fov = (w / h) &lt; 0.85 ? 46 : 40;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>camera.updateProjectionMatrix();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>renderer.setSize(w, h);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>window.addEventListener('resize', () =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>handleViewportResize();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>setCameraView(currentViewName);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>applyMaterialPalette();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>renderLanguageUI();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>handleViewportResize();</p>
+<p class="p1"><span class="Apple-converted-space">    </span>selectClassificationSystem('anatomical');</p>
+<p class="p1"><span class="Apple-converted-space">    </span>setCameraView('oblique');</p>
+<p class="p1"><span class="Apple-converted-space">    </span>rebuildMorphology();</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>function animate() {</p>
+<p class="p1"><span class="Apple-converted-space">      </span>requestAnimationFrame(animate);</p>
+<p class="p1"><span class="Apple-converted-space">      </span>let needsUpdate = false;</p>
+<p class="p1"><span class="Apple-converted-space">      </span>['glans', 'curvature', 'scrotum', 'meatus', 'gonad'].forEach((key) =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">        </span>const diff = targetState[key] - state[key];</p>
+<p class="p1"><span class="Apple-converted-space">        </span>if (Math.abs(diff) &gt; 0.04) {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>state[key] += diff * 0.14;</p>
+<p class="p1"><span class="Apple-converted-space">          </span>needsUpdate = true;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>} else if (state[key] !== targetState[key]) {</p>
+<p class="p1"><span class="Apple-converted-space">          </span>state[key] = targetState[key];</p>
+<p class="p1"><span class="Apple-converted-space">          </span>needsUpdate = true;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">      </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">      </span>if (needsUpdate) rebuildMorphology();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>controls.update();</p>
+<p class="p1"><span class="Apple-converted-space">      </span>renderer.render(scene, camera);</p>
+<p class="p1"><span class="Apple-converted-space">    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>animate();</p>
+<p class="p1"><span class="Apple-converted-space">  </span>&lt;/script&gt;</p>
+<p class="p1">&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
+</body>
+</html>
